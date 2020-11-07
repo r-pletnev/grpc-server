@@ -1,0 +1,55 @@
+
+syntax = "proto3";
+
+package grpc_server;
+
+service ProductService {
+  rpc Fetch(FetchRequest) returns (FetchResponse) {}
+  rpc List(ListRequest) returns (ListResponse) {}
+}
+
+message FetchRequest {
+  string url = 1;
+}
+
+message FetchResponse {
+  int32 statusCode = 1;
+  string message = 2;
+}
+
+message ListRequest {
+  PagingParameters paging = 1;
+  SortingParameters sorting = 2;
+}
+
+message PagingParameters {
+  int32 page_number = 1;
+  int32 per_page = 2;
+}
+
+message SortingParameters {
+  enum FIELD {
+    ID = 0;
+    NAME = 1;
+    PRICE = 2;
+    PRICE_UPDATE_COUNT = 3;
+    UPDATED_AT = 4;
+  }
+  enum ORDER {
+    ASC = 0;
+    DESC = 1;
+  }
+  FIELD field = 1;
+  ORDER order = 2;
+}
+
+message ListResponse {
+  repeated Product products = 1;
+}
+
+message Product {
+  string name = 1;
+  uint32 price = 2;
+  uint32 price_updated_count = 3;
+  int64 updated_at = 4; // unix timestamp
+}
