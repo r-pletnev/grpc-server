@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 
 const (
 	port    = ":50051"
-	dbUrl   = "mongodb://root:example@localhost:27017"
+	dbUrl   = "mongodb://root:example@mongo:27017"
 	dbName  = "csv"
 	dbTable = "products"
 )
@@ -76,7 +76,7 @@ func (s *server) List(ctx context.Context, in *pb.ListRequest) (*pb.ListResponse
 	return &pb.ListResponse{Products: result}, nil
 }
 
-func main() {
+func Run() {
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -90,3 +90,4 @@ func main() {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }
+

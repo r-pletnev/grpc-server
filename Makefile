@@ -4,30 +4,34 @@ WEBSERVER_PORT = 8003/tcp
 CSV_PATH = http://localhost:8003/products.csv
 
 
+up:
+	docker-compose up --scale app=3
+
+build:
+	docker-compose build
 
 proto:
 	protoc --go_out=. --go_opt=paths=source_relative \
 		--go-grpc_out=. --go-grpc_opt=paths=source_relative \
 		grpcserver/grpc_server.proto
 
-srv:
+local_server:
 	go run $(SERVER_PATH)&
 
-web_srv:
+local_web_server:
 	cd test && ./web-server.sh&
 
-kill_webserver:
+kill_local_webserver:
 	fuser -k $(WEBSERVER_PORT)
 
-kill_server:
+kill_local_server:
 	fuser -k $(SERVER_PORT)
 	fuser -k $(WEBSERVER_PORT)
 
-clt:
+local_client:
 	go run client/main.go  $(CSV_PATH)
 
-run_client: web_srv clt kill_webserver
+run_local_client: local_web_server local_client kill_local_webserver
 
-
-test: srv run_client kill_server
+local_test: local_server run_local_client kill_local_server
 
